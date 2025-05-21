@@ -1,10 +1,12 @@
 from flask import Flask, request, render_template
+from flask_cors import CORS
 from sympy import symbols, diff, latex
 from sympy.parsing.latex import parse_latex
+from flask import jsonify
 import requests
 
 app = Flask(__name__)
-
+CORS(app)
 # ✅ Clave API válida de OpenRouter (solo para pruebas locales)
 API_KEY = "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"
 
@@ -17,7 +19,7 @@ def index():
 
 @app.route('/resolver', methods=['POST'])
 def resolver():
-    formula_latex = request.form['formula']
+    formula_latex = request.json['formula']
     x, y, z = symbols('x y z')
 
     try:
@@ -98,7 +100,7 @@ Explica con claridad y estructura paso a paso cada derivada parcial.
     except Exception as e:
         derivadas = {'error': f'Error al procesar fórmula: {e}'}
 
-    return render_template('resultado.html', **derivadas)
+    return jsonify(derivadas)
 
 if __name__ == '__main__':
     app.run(debug=True)

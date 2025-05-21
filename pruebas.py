@@ -1,15 +1,14 @@
 import requests
 
 # Tu clave API (pruebas locales solamente)
-API_KEY = "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"
+API_KEY = "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"
 
 # Modelo a probar (puedes cambiarlo a "mistralai/mixtral-8x7b-instruct", etc.)
-MODEL = "meta-llama/llama-3.3-8b-instruct:free"
+MODEL = "qwen/qwen3-235b-a22b:free"
 
 # Prompt de prueba
 PROMPT = """
-Explica de forma sencilla qué es una derivada parcial y cómo se aplica sobre una función de varias variables.
-Ejemplo: f(x, y, z) = x^2 * y + sin(x*z)
+Quien es el presidente de los Estados Unidos?W
 """
 
 # Preparar headers y payload
@@ -21,7 +20,7 @@ headers = {
 payload = {
     "model": MODEL,
     "messages": [
-        {"role": "system", "content": "Eres un profesor de cálculo que explica paso a paso con claridad."},
+        {"role": "system", "content": "Responde de manear clara y concisa."},
         {"role": "user", "content": PROMPT}
     ]
 }

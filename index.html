@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Derivabot - Practica Derivadas Matemáticas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  <style>
+    :root {
+      --primary: #7b2cbf;
+      --primary-light: #9d4edd;
+      --primary-dark: #5a189a;
+      --secondary: #2a9d8f;
+      --secondary-light: #4cc9f0;
+      --tertiary: #f8961e;
+      --tertiary-light: #f9c74f;
+      --dark: #212529;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --success: #38b000;
+      --error: #d00000;
+      --warning: #ffaa00;
+      --white: #ffffff;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+      --shadow-lg: 0 10px 20px rgba(0,0,0,0.2);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeIn 1s ease;
+      max-width: 800px;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-shadow: var(--shadow-sm);
+      font-weight: 700;
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      color: var(--gray);
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin-bottom: 40px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 15px;
+      box-shadow: var(--shadow-md);
+      padding: 30px;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+    }
+
+    .card.simple::before {
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+    }
+
+    .card.medium::before {
+      background: linear-gradient(to right, var(--secondary), var(--secondary-light));
+    }
+
+    .card.complex::before {
+      background: linear-gradient(to right, var(--tertiary), var(--tertiary-light));
+    }
+
+    .card.leaderboard::before {
+      background: linear-gradient(to right, var(--gray), #adb5bd);
+    }
+
+    .card.scanner::before {
+      background: linear-gradient(to right, #4361ee, #3a0ca3);
+    }
+
+    .card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .card p {
+      color: var(--gray);
+      margin-bottom: 25px;
+      flex-grow: 1;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .card.simple .card-icon {
+      color: var(--primary);
+    }
+
+    .card.medium .card-icon {
+      color: var(--secondary);
+    }
+
+    .card.complex .card-icon {
+      color: var(--tertiary);
+    }
+
+    .card.leaderboard .card-icon {
+      color: var(--gray);
+    }
+
+    .card.scanner .card-icon {
+      color: #4361ee;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, var(--primary-light), var(--primary));
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(to right, var(--secondary), var(--secondary-light));
+      color: var(--white);
+    }
+
+    .btn-secondary:hover {
+      background: linear-gradient(to right, var(--secondary-light), var(--secondary));
+      transform: translateY(-2px);
+    }
+
+    .btn-tertiary {
+      background: linear-gradient(to right, var(--tertiary), var(--tertiary-light));
+      color: var(--white);
+    }
+
+    .btn-tertiary:hover {
+      background: linear-gradient(to right, var(--tertiary-light), var(--tertiary));
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--gray);
+      color: var(--gray);
+    }
+
+    .btn-outline:hover {
+      background: var(--gray);
+      color: var(--white);
+    }
+
+    .btn-scanner {
+      background: linear-gradient(to right, #4361ee, #3a0ca3);
+      color: var(--white);
+    }
+
+    .btn-scanner:hover {
+      background: linear-gradient(to right, #3a0ca3, #4361ee);
+      transform: translateY(-2px);
+    }
+
+    .quiz-container {
+      display: none;
+      background: var(--white);
+      border-radius: 15px;
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 800px;
+      padding: 30px;
+      margin: 0 auto;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .quiz-title {
+      font-size: 1.5rem;
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .quiz-info {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .timer {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--white);
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+      padding: 8px 15px;
+      border-radius: 50px;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .time-warning {
+      background: linear-gradient(to right, var(--warning), #ffc300);
+    }
+
+    .time-danger {
+      background: linear-gradient(to right, var(--error), #dc2f02);
+    }
+
+    .score-display {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--white);
+      background: linear-gradient(to right, var(--secondary), var(--secondary-light));
+      padding: 8px 15px;
+      border-radius: 50px;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .question {
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      color: var(--dark);
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .option {
+      padding: 18px;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: left;
+      font-size: 1.1rem;
+      position: relative;
+      padding-left: 60px;
+    }
+
+    .option:hover {
+      border-color: var(--primary-light);
+      background: rgba(106, 27, 154, 0.05);
+    }
+
+    .option.selected {
+      border-color: var(--primary);
+      background: rgba(106, 27, 154, 0.1);
+    }
+
+    .option.correct {
+      border-color: var(--success);
+      background: rgba(46, 125, 50, 0.1);
+    }
+
+    .option.incorrect {
+      border-color: var(--error);
+      background: rgba(198, 40, 40, 0.1);
+    }
+
+    .option-number {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .selected .option-number {
+      background: var(--primary);
+      color: white;
+    }
+
+    .correct .option-number {
+      background: var(--success);
+      color: white;
+    }
+
+    .incorrect .option-number {
+      background: var(--error);
+      color: white;
+    }
+
+    .feedback {
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .feedback.correct {
+      background: rgba(46, 125, 50, 0.1);
+      border-left: 5px solid var(--success);
+      color: var(--success);
+      display: block;
+    }
+
+    .feedback.incorrect {
+      background: rgba(198, 40, 40, 0.1);
+      border-left: 5px solid var(--error);
+      color: var(--error);
+      display: block;
+    }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .explanation {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(38, 50, 56, 0.05);
+      border-radius: 8px;
+      color: var(--dark);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .quiz-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background: #eee;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 5px;
+    }
+
+    .quiz-selector {
+      display: none;
+      background: var(--white);
+      border-radius: 15px;
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 800px;
+      padding: 30px;
+      margin: 0 auto;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .quiz-selector h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .quiz-option {
+      padding: 25px 20px;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .quiz-option h3 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .quiz-option p {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .quiz-meta {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+
+    .quiz-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--gray);
+    }
+
+    .motivational-phrases {
+      font-style: italic;
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+
+    .results-container {
+      display: none;
+      background: var(--white);
+      border-radius: 15px;
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 800px;
+      padding: 40px 30px;
+      margin: 20px auto;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .results-container h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .score {
+      font-size: 4rem;
+      font-weight: bold;
+      margin: 20px 0;
+      color: var(--primary);
+      position: relative;
+      display: inline-block;
+    }
+
+    .score::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+      border-radius: 2px;
+    }
+
+    .results-message {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .results-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    .result-card {
+      background: var(--light);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .result-card h3 {
+      font-size: 1rem;
+      color: var(--gray);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .result-card p {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: var(--primary);
+      opacity: 0;
+      animation: confetti-fall 5s linear forwards;
+      z-index: 1000;
+    }
+
+    /* Nuevos estilos para el formulario de nombre */
+    .name-form {
+      margin: 20px 0;
+      padding: 20px;
+      background: var(--light);
+      border-radius: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .name-form h3 {
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+
+    .name-input {
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 50px;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto 15px;
+      display: block;
+      transition: var(--transition);
+    }
+
+    .name-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.2);
+    }
+
+    /* Estilos para la tabla de clasificación */
+    .leaderboard-container {
+      display: none;
+      background: var(--white);
+      border-radius: 15px;
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 1000px;
+      padding: 30px;
+      margin: 20px auto;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .leaderboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .leaderboard-title {
+      font-size: 2rem;
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .difficulty-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .difficulty-tab {
+      padding: 8px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      background: var(--light);
+      color: var(--gray);
+    }
+
+    .difficulty-tab.active {
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+      color: white;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .leaderboard-table th {
+      background: var(--light);
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .leaderboard-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .leaderboard-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .leaderboard-table tr:hover {
+      background: rgba(123, 44, 191, 0.05);
+    }
+
+    .rank {
+      font-weight: bold;
+      color: var(--primary);
+      width: 50px;
+    }
+
+    .player-name {
+      font-weight: 500;
+    }
+
+    .player-score {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .no-scores {
+      text-align: center;
+      padding: 40px;
+      color: var(--gray);
+      font-style: italic;
+    }
+
+    /* Estilos para el escáner */
+    .scanner-container {
+      display: none;
+      background: var(--white);
+      border-radius: 15px;
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 800px;
+      padding: 30px;
+      margin: 0 auto;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .scanner-header {
+      margin-bottom: 25px;
+    }
+
+    .scanner-title {
+      font-size: 1.8rem;
+      color: var(--dark);
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .scanner-description {
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    .upload-area {
+      border: 2px dashed var(--gray);
+      border-radius: 10px;
+      padding: 40px;
+      margin-bottom: 25px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .upload-area:hover {
+      border-color: var(--primary);
+      background: rgba(123, 44, 191, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      color: var(--gray);
+      margin-bottom: 15px;
+    }
+
+    .upload-text {
+      font-size: 1.1rem;
+      color: var(--gray);
+      margin-bottom: 10px;
+    }
+
+    .upload-hint {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .preview-container {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .preview-image {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .processing-indicator {
+      display: none;
+      margin: 20px 0;
+    }
+
+    .processing-spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary);
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    .processing-text {
+      color: var(--gray);
+    }
+
+    .solution-container {
+      margin-top: 30px;
+      text-align: left;
+      display: none;
+    }
+
+    .solution-title {
+      font-size: 1.5rem;
+      color: var(--dark);
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .solution-step {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .step-number {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .step-description {
+      display: inline-block;
+      vertical-align: middle;
+      width: calc(100% - 40px);
+    }
+
+    .math-expression {
+      font-size: 1.2rem;
+      margin: 10px 0;
+      padding: 10px;
+      background: var(--light);
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+
+    .scanner-actions {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    /* Estilos para el editor de ecuaciones */
+    .equation-editor {
+      display: none;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .editor-title {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+    }
+
+    .editor-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+      font-family: monospace;
+    }
+
+    .editor-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.2);
+    }
+
+    .editor-hint {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 15px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      .subtitle {
+        font-size: 1.1rem;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .quiz-options {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .question {
+        font-size: 1.2rem;
+      }
+
+      .option {
+        padding: 15px 15px 15px 50px;
+        font-size: 1rem;
+      }
+
+      .leaderboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .difficulty-tabs {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .scanner-title {
+        font-size: 1.5rem;
+      }
+
+      .upload-area {
+        padding: 30px 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .quiz-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .quiz-info {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .results-details {
+        grid-template-columns: 1fr;
+      }
+
+      .leaderboard-table th, 
+      .leaderboard-table td {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+      }
+
+      .scanner-container {
+        padding: 20px;
+      }
+
+      .solution-step {
+        font-size: 0.9rem;
+      }
+
+      .math-expression {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <div class="logo">
+        <i class="fas fa-robot"></i>
+      </div>
+    </div>
+    <h1>DERIVABOT</h1>
+    <p class="subtitle">Domina las derivadas matemáticas con nuestro sistema interactivo de aprendizaje</p>
+  </header>
+
+  <div class="dashboard">
+    <div class="card simple" onclick="showQuizSelector('simple')">
+      <div class="card-icon">
+        <i class="fas fa-calculator"></i>
+      </div>
+      <h2>Derivadas Simples</h2>
+      <p>Practica con derivadas básicas perfectas para empezar tu camino en el cálculo diferencial</p>
+      <button class="btn btn-primary">
+        <i class="fas fa-play"></i> Comenzar
+      </button>
+    </div>
+
+    <div class="card medium" onclick="showQuizSelector('medium')">
+      <div class="card-icon">
+        <i class="fas fa-brain"></i>
+      </div>
+      <h2>Derivadas Medias</h2>
+      <p>Desafíos intermedios con reglas de producto, cociente y cadena para consolidar tus conocimientos</p>
+      <button class="btn btn-secondary">
+        <i class="fas fa-play"></i> Comenzar
+      </button>
+    </div>
+
+    <div class="card complex" onclick="showQuizSelector('complex')">
+      <div class="card-icon">
+        <i class="fas fa-rocket"></i>
+      </div>
+      <h2>Derivadas Complejas</h2>
+      <p>Problemas avanzados con funciones compuestas, trigonométricas inversas y logarítmicas para expertos</p>
+      <button class="btn btn-tertiary">
+        <i class="fas fa-play"></i> Comenzar
+      </button>
+    </div>
+
+    <div class="card leaderboard" onclick="showLeaderboard()">
+      <div class="card-icon">
+        <i class="fas fa-trophy"></i>
+      </div>
+      <h2>Clasificación</h2>
+      <p>Consulta los mejores puntajes y compite con otros jugadores</p>
+      <button class="btn btn-outline">
+        <i class="fas fa-chart-line"></i> Ver ranking
+      </button>
+    </div>
+
+    <div class="card scanner" onclick="showScanner()">
+      <div class="card-icon">
+        <i class="fas fa-camera"></i>
+      </div>
+      <h2>Escáner de Derivadas</h2>
+      <p>Resuelve derivadas paso a paso subiendo una foto de tu ejercicio</p>
+      <button class="btn btn-scanner">
+        <i class="fas fa-camera"></i> Probar escáner
+      </button>
+    </div>
+  </div>
+
+  <!-- Selector de quiz -->
+  <div class="quiz-selector" id="quizSelector">
+    <h2 id="selectorTitle">Selecciona un quiz</h2>
+    <div class="quiz-options" id="quizOptions"></div>
+    <button class="btn btn-outline" onclick="hideQuizSelector()">
+      <i class="fas fa-arrow-left"></i> Volver al menú
+    </button>
+  </div>
+
+  <!-- Contenedor del quiz -->
+  <div class="quiz-container" id="quizContainer">
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="quiz-header">
+      <div class="quiz-title" id="quizType"></div>
+      <div class="quiz-info">
+        <div class="score-display" id="scoreDisplay">0</div>
+        <div class="timer" id="timer">10</div>
+      </div>
+    </div>
+
+    <div class="question" id="question"></div>
+
+    <div class="options" id="options"></div>
+
+    <div class="feedback correct" id="correctFeedback">
+      <div class="feedback-header">
+        <i class="fas fa-check-circle"></i>
+        <span>¡Respuesta correcta!</span>
+      </div>
+      <div class="motivational-phrases" id="motivationalPhrase"></div>
+    </div>
+
+    <div class="feedback incorrect" id="incorrectFeedback">
+      <div class="feedback-header">
+        <i class="fas fa-times-circle"></i>
+        <span>Respuesta incorrecta</span>
+      </div>
+      <div>La respuesta correcta es: <span id="correctAnswer"></span></div>
+      <div class="explanation" id="explanation"></div>
+    </div>
+
+    <div class="quiz-footer">
+      <div id="questionCounter">Pregunta 1 de 10</div>
+      <button class="btn btn-primary" id="nextBtn" disabled onclick="nextQuestion()">
+        <span id="nextBtnText">Siguiente</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Resultados del quiz -->
+  <div class="results-container" id="resultsContainer">
+    <h2>¡Quiz completado!</h2>
+    <div class="score" id="finalScore">8/10</div>
+    <p class="results-message" id="finalMessage">¡Buen trabajo! Sigue practicando para mejorar.</p>
+    
+    <div class="results-details">
+      <div class="result-card">
+        <h3>Preguntas correctas</h3>
+        <p id="correctAnswersCount">8</p>
+      </div>
+      <div class="result-card">
+        <h3>Tiempo promedio</h3>
+        <p id="averageTime">5.2s</p>
+      </div>
+      <div class="result-card">
+        <h3>Puntuación</h3>
+        <p id="percentageScore">80%</p>
+      </div>
+    </div>
+    
+    <!-- Formulario para ingresar nombre -->
+    <div class="name-form" id="nameForm">
+      <h3>¡Registra tu puntuación!</h3>
+      <input type="text" class="name-input" id="playerName" placeholder="Ingresa tu nombre" maxlength="20">
+      <button class="btn btn-primary" onclick="saveScore()">
+        <i class="fas fa-save"></i> Guardar puntuación
+      </button>
+    </div>
+    
+    <div class="actions">
+      <button class="btn btn-primary" onclick="restartQuiz()">
+        <i class="fas fa-redo"></i> Repetir quiz
+      </button>
+      <button class="btn btn-secondary" onclick="selectAnotherQuiz()">
+        <i class="fas fa-tasks"></i> Elegir otro quiz
+      </button>
+      <button class="btn btn-outline" onclick="returnToDashboard()">
+        <i class="fas fa-home"></i> Volver al inicio
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla de clasificación -->
+  <div class="leaderboard-container" id="leaderboardContainer">
+    <div class="leaderboard-header">
+      <h2 class="leaderboard-title">Clasificación de Jugadores</h2>
+      <div class="difficulty-tabs">
+        <div class="difficulty-tab active" onclick="changeLeaderboardTab('simple')">Simples</div>
+        <div class="difficulty-tab" onclick="changeLeaderboardTab('medium')">Medias</div>
+        <div class="difficulty-tab" onclick="changeLeaderboardTab('complex')">Complejas</div>
+      </div>
+    </div>
+    
+    <div id="leaderboardContent">
+      <!-- La tabla se generará dinámicamente con JavaScript -->
+    </div>
+    
+    <button class="btn btn-outline" style="margin-top: 30px;" onclick="returnToDashboard()">
+      <i class="fas fa-arrow-left"></i> Volver al inicio
+    </button>
+  </div>
+
+  <!-- Escáner de derivadas -->
+  <div class="scanner-container" id="scannerContainer">
+    <div class="scanner-header">
+      <h2 class="scanner-title">Escáner de Derivadas</h2>
+      <p class="scanner-description">Sube una foto de tu ejercicio de derivadas y obtén la solución paso a paso</p>
+    </div>
+    
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+      <div class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      <div class="upload-text">Haz clic para subir una imagen</div>
+      <div class="upload-hint">Formatos soportados: JPG, PNG (Máx. 5MB)</div>
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
+    </div>
+    
+    <div class="preview-container" id="previewContainer">
+      <img id="previewImage" class="preview-image" src="" alt="Vista previa de la imagen">
+      <button class="btn btn-primary" onclick="processImage()">
+        <i class="fas fa-cogs"></i> Resolver derivada
+      </button>
+      <button class="btn btn-outline" onclick="clearImage()">
+        <i class="fas fa-times"></i> Cambiar imagen
+      </button>
+    </div>
+    
+    <div class="processing-indicator" id="processingIndicator">
+      <div class="processing-spinner"></div>
+      <div class="processing-text">Procesando imagen y resolviendo derivada...</div>
+    </div>
+    
+    <div class="equation-editor" id="equationEditor">
+      <div class="editor-title">Editar ecuación detectada:</div>
+      <textarea class="editor-input" id="equationInput" rows="3" placeholder="Ejemplo: x^2 + 3x - 5"></textarea>
+      <div class="editor-hint">Ajusta la ecuación si el reconocimiento no fue preciso. Usa sintaxis matemática estándar.</div>
+      <button class="btn btn-primary" onclick="solveEditedEquation()">
+        <i class="fas fa-check"></i> Resolver ecuación editada
+      </button>
+    </div>
+    
+    <div class="solution-container" id="solutionContainer">
+      <h3 class="solution-title">Solución paso a paso:</h3>
+      <div id="solutionSteps">
+        <!-- Los pasos de solución se agregarán aquí dinámicamente -->
+      </div>
+    </div>
+    
+    <div class="scanner-actions">
+      <button class="btn btn-primary" onclick="scanAnother()">
+        <i class="fas fa-camera"></i> Escanear otra derivada
+      </button>
+      <button class="btn btn-outline" onclick="returnToDashboard()">
+        <i class="fas fa-home"></i> Volver al inicio
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Datos del quiz mejorados
+    const quizzes = {
+      simple: [
+        {
+          title: "Fundamentos de Derivación",
+          timePerQuestion: 7,
+          questions: [
+            {
+              question: "¿Cuál es la derivada de f(x) = x²?",
+              options: ["2x", "x", "x²", "2"],
+              correctAnswer: 0,
+              explanation: "Usando la regla de potencias: d/dx(xⁿ) = n·xⁿ⁻¹. Para x², n=2, entonces 2·x¹ = 2x."
+            },
+            {
+              question: "Deriva f(x) = 5",
+              options: ["5", "1", "x", "0"],
+              correctAnswer: 3,
+              explanation: "La derivada de cualquier constante es siempre 0."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = 3x + 2?",
+              options: ["3x", "3x + 2", "3", "5"],
+              correctAnswer: 2,
+              explanation: "La derivada de 3x es 3 (regla de potencias) y la derivada de 2 es 0. Sumando: 3 + 0 = 3."
+            },
+            {
+              question: "Deriva f(x) = sen(x)",
+              options: ["cos(x)", "-cos(x)", "sen(x)", "tan(x)"],
+              correctAnswer: 0,
+              explanation: "La derivada de sen(x) es cos(x). Es una de las derivadas trigonométricas básicas."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = eˣ?",
+              options: ["eˣ", "x·eˣ", "eˣ/x", "ln(x)"],
+              correctAnswer: 0,
+              explanation: "La derivada de eˣ es única porque es igual a sí misma: eˣ."
+            },
+            {
+              question: "Deriva f(x) = ln(x)",
+              options: ["x", "1","1/x","eˣ"],
+              correctAnswer: 2,
+              explanation: "La derivada de ln(x) es 1/x."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = √x?",
+              options: ["√x", "2√x", "1/(2√x)", "x/2"],
+              correctAnswer: 2,
+              explanation: "√x = x^(1/2). Aplicando regla de potencias: (1/2)x^(-1/2) = 1/(2√x)."
+            },
+            {
+              question: "Deriva f(x) = cos(x)",
+              options: ["-sen(x)", "sen(x)", "cos(x)", "-cos(x)"],
+              correctAnswer: 0,
+              explanation: "La derivada de cos(x) es -sen(x)."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = x³?",
+              options: ["x²", "3x", "x⁴/4", "3x²"],
+              correctAnswer: 3,
+              explanation: "Aplicando regla de potencias: d/dx(x³) = 3x²."
+            },
+            {
+              question: "Deriva f(x) = 4x² + 3x - 5",
+              options: ["8x + 3", "4x + 3", "8x", "8x - 5"],
+              correctAnswer: 0,
+              explanation: "Derivada término a término: 4x² → 8x, 3x → 3, -5 → 0. Resultado: 8x + 3."
+            }
+          ]
+        },
+        {
+          title: "Reglas Básicas de Derivación",
+          timePerQuestion: 9,
+          questions: [
+            {
+              question: "Deriva f(x) = 7x⁴",
+              options: ["7x³", "28x", "28x³", "7x⁵/5"],
+              correctAnswer: 2,
+              explanation: "Regla de potencias: 7·4·x³ = 28x³."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = tan(x)?",
+              options: ["cos²(x)", "1/sen(x)", "cot(x)", "sec²(x)"],
+              correctAnswer: 3,
+              explanation: "La derivada de tan(x) es sec²(x)."
+            },
+            {
+              question: "Deriva f(x) = 1/x",
+              options: ["-1/x²", "1/x²", "ln(x)", "-x"],
+              correctAnswer: 0,
+              explanation: "1/x = x⁻¹. Derivada: -1·x⁻² = -1/x²."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = 2ˣ?",
+              options: ["2ˣ", "2ˣ·ln(2)", "x·2ˣ⁻¹", "2ˣ/ln(2)"],
+              correctAnswer: 1,
+              explanation: "La derivada de aˣ es aˣ·ln(a). En este caso: 2ˣ·ln(2)."
+            },
+            {
+              question: "Deriva f(x) = x·sen(x)",
+              options: ["cos(x)", "sen(x) + x·cos(x)", "x·cos(x)", "sen(x) + cos(x)"],
+              correctAnswer: 1,
+              explanation: "Regla del producto: u·v → u'v + uv'. Aquí: 1·sen(x) + x·cos(x)."
+            }
+          ]
+        },
+        {
+          title: "Derivadas de Funciones Elementales",
+          timePerQuestion: 9,
+          questions: [
+            {
+              question: "Deriva f(x) = x² + cos(x)",
+              options: ["2x + sen(x)", "2x - sen(x)", "2x - cos(x)", "2x + cos(x)"],
+              correctAnswer: 1,
+              explanation: "Derivada término a término: x² → 2x, cos(x) → -sen(x)."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = eˣ + ln(x)?",
+              options: ["eˣ + x", "eˣ + 1", "eˣ + ln(x)", "eˣ + 1/x"],
+              correctAnswer: 3,
+              explanation: "Derivada término a término: eˣ → eˣ, ln(x) → 1/x."
+            },
+            {
+              question: "Deriva f(x) = 5x³ - 2x² + x - 8",
+              options: ["15x² - 4x", "5x² - 2x + 1", "15x² - 2x + 1", "15x² - 4x + 1"],
+              correctAnswer: 3,
+              explanation: "Derivada término a término: 5x³ → 15x², -2x² → -4x, x → 1, -8 → 0."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = sen(x) + cos(x)?",
+              options: ["cos(x) - sen(x)", "cos(x) + sen(x)", "-cos(x) - sen(x)", "-cos(x) + sen(x)"],
+              correctAnswer: 0,
+              explanation: "Derivada término a término: sen(x) → cos(x), cos(x) → -sen(x)."
+            },
+            {
+              question: "Deriva f(x) = x·ln(x)",
+              options: ["1/x", "ln(x) + x", "ln(x) + 1", "1 + 1/x"],
+              correctAnswer: 2,
+              explanation: "Regla del producto: 1·ln(x) + x·(1/x) = ln(x) + 1."
+            }
+          ]
+        }
+      ],
+      medium: [
+        {
+          title: "Reglas de Producto y Cociente",
+          timePerQuestion: 15,
+          questions: [
+            {
+              question: "Deriva f(x) = (x² + 1)(x - 3)",
+              options: ["3x² - 6x + 1", "2x(x - 3) + (x² + 1)", "x³ - 3x² + x - 3", "2x + 1"],
+              correctAnswer: 1,
+              explanation: "Regla del producto: (x²+1)' = 2x, (x-3)' = 1. Entonces: 2x(x-3) + (x²+1)(1)."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = (2x + 1)/(x - 1)?",
+              options: ["-3/(x - 1)²", "(2(x - 1) - (2x + 1))/(x - 1)²", "2/(x - 1)", "3/(x - 1)²"],
+              correctAnswer: 1,
+              explanation: "Regla del cociente: [f'g - fg']/g² = [2(x-1)-(2x+1)1]/(x-1)² = -3/(x-1)²."
+            },
+            {
+              question: "Deriva f(x) = sen(x²)",
+              options: ["2x·cos(x²)", "cos(x²)", "2x·sen(x²)", "x²·cos(x²)"],
+              correctAnswer: 0,
+              explanation: "Regla de la cadena: derivada externa (cos) × derivada interna (2x)."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = e^(3x)?",
+              options: ["e^(3x)", "3x·e^(3x)", "3e^(3x)", "e^(3x)/3"],
+              correctAnswer: 2,
+              explanation: "Regla de la cadena: derivada de e^u es u'·e^u. Aquí u=3x → u'=3."
+            },
+            {
+              question: "Deriva f(x) = ln(x² + 1)",
+              options: ["1/(x² + 1)", "2x", "x/(x² + 1)", "2x/(x² + 1)"],
+              correctAnswer: 3,
+              explanation: "Regla de la cadena: derivada de ln(u) es u'/u. Aquí u=x²+1 → u'=2x."
+            }
+          ]
+        },
+        {
+          title: "Regla de la Cadena",
+          timePerQuestion: 15,
+          questions: [
+            {
+              question: "Deriva f(x) = √(x³ + 1)",
+              options: ["3x²/(2√(x³ + 1))", "1/(2√(x³ + 1))", "3x²/√(x³ + 1)", "√(3x²)"],
+              correctAnswer: 0,
+              explanation: "√u = u^(1/2). Derivada: (1/2)u^(-1/2)·u'. Aquí u'=3x²."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = cos(3x)?",
+              options: ["3sen(3x)", "-sen(3x)", "-3sen(3x)", "3cos(3x)"],
+              correctAnswer: 2,
+              explanation: "Regla de la cadena: derivada de cos(u) es -u'·sen(u). Aquí u=3x → u'=3."
+            },
+            {
+              question: "Deriva f(x) = x·e^x",
+              options: ["e^x", "e^x(1 + x)",  "x·e^x", "e^x(x + 1/x)"],
+              correctAnswer: 1,
+              explanation: "Regla del producto: 1·e^x + x·e^x = e^x(1 + x)."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = tan(x²)?",
+              options: ["sec²(x²)", "2x·sec²(x²)", "2x·tan(x²)", "x²·sec²(x²)"],
+              correctAnswer: 1,
+              explanation: "Regla de la cadena: derivada de tan(u) es u'·sec²(u). Aquí u=x² → u'=2x."
+            },
+            {
+              question: "Deriva f(x) = ln(cos(x))",
+              options: ["-tan(x)", "1/cos(x)", "-sen(x)/cos(x)", "tan(x)"],
+              correctAnswer: 2,
+              explanation: "Regla de la cadena: derivada de ln(u) es u'/u. Aquí u=cos(x) → u'=-sen(x)."
+            }
+          ]
+        }
+      ],
+      complex: [
+        {
+          title: "Derivadas Avanzadas",
+          timePerQuestion: 20,
+          questions: [
+            {
+              question: "Deriva f(x) = e^(x²)·sen(x)",
+              options: [
+                "e^(x²)(2x·sen(x) + cos(x))",
+                "e^(x²)(2x + cos(x))",
+                "2x·e^(x²)·sen(x) + e^(x²)·cos(x)",
+                "e^(x²)(sen(x) + cos(x))"
+              ],
+              correctAnswer: 0,
+              explanation: "Regla del producto + cadena: [2x·e^(x²)]sen(x) + e^(x²)cos(x) = e^(x²)(2x·sen(x) + cos(x))."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = ln(x + √(x² + 1))?",
+              options: [
+                "1/√(x² + 1)",
+                "(1 + x/√(x² + 1))/(x + √(x² + 1))",
+                "1/(x + √(x² + 1))",
+                "x/√(x² + 1)"
+              ],
+              correctAnswer: 1,
+              explanation: "Regla de la cadena: 1/u · (1 + derivada de √(x²+1)). La derivada de √(x²+1) es x/√(x²+1)."
+            },
+            {
+              question: "Deriva f(x) = sen²(x) + cos²(x)",
+              options: [
+                "0",
+                "2sen(x)cos(x) - 2cos(x)sen(x)",
+                "2sen(x) + 2cos(x)",
+                "1"
+              ],
+              correctAnswer: 0,
+              explanation: "Sabemos que sen²(x) + cos²(x) = 1 (identidad trigonométrica). La derivada de una constante es 0."
+            },
+            {
+              question: "¿Cuál es la derivada de f(x) = x^x?",
+              options: [
+                "x·x^(x-1)",
+                "x^x·ln(x)",
+                "e^(x·ln(x))",
+                "x^x(ln(x) + 1)",
+              ],
+              correctAnswer: 3,
+              explanation: "Usamos diferenciación logarítmica: f(x) = e^(x·ln(x)). Derivada: e^(x·ln(x))(ln(x) + 1) = x^x(ln(x) + 1)."
+            },
+            {
+              question: "Deriva f(x) = arcsen(x)",
+              options: [
+                "1/(1 + x²)",
+                "1/√(x² - 1)",
+                "1/√(1 - x²)",
+                "-1/√(1 - x²)"
+              ],
+              correctAnswer: 2,
+              explanation: "La derivada de arcsen(x) es 1/√(1 - x²)."
+            }
+          ]
+        }
+      ]
+    };
+
+    // Frases motivacionales mejoradas
+    const motivationalPhrases = [
+      "¡Excelente trabajo! Tu comprensión de las derivadas es impresionante.",
+      "¡Correcto! Eres un genio del cálculo II.",
+      "¡Perfecto! Cada respuesta correcta te acerca a dominar el tema.",
+      "¡Bien hecho! Tu habilidad para derivar es notable.",
+      "¡Respuesta correcta! Sigue así y serás imparable.",
+      "¡Impresionante! Tu mente analítica es asombrosa.",
+      "¡Fantástico! Cada derivada que resuelves fortalece tu conocimiento.",
+      "¡Correcto! Demuestras gran destreza matemática.",
+      "¡Perfecto! Eres un maestro de las técnicas de derivación.",
+      "¡Bien hecho! Tu precisión es digna de admiración."
+    ];
+
+    // Variables de estado mejoradas
+    let currentQuiz = null;
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer = null;
+    let timeLeft = 0;
+    let selectedOption = null;
+    let currentDifficulty = null;
+    let currentQuizIndex = null;
+    let responseTimes = [];
+    let startTime = 0;
+    let currentLeaderboardTab = 'simple';
+    let uploadedImage = null;
+
+    // Elementos del DOM
+    const dashboard = document.querySelector('.dashboard');
+    const quizSelector = document.getElementById('quizSelector');
+    const selectorTitle = document.getElementById('selectorTitle');
+    const quizOptions = document.getElementById('quizOptions');
+    const quizContainer = document.getElementById('quizContainer');
+    const quizType = document.getElementById('quizType');
+    const timerElement = document.getElementById('timer');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.getElementById('options');
+    const correctFeedback = document.getElementById('correctFeedback');
+    const incorrectFeedback = document.getElementById('incorrectFeedback');
+    const motivationalPhrase = document.getElementById('motivationalPhrase');
+    const correctAnswer = document.getElementById('correctAnswer');
+    const explanation = document.getElementById('explanation');
+    const nextBtn = document.getElementById('nextBtn');
+    const nextBtnText = document.getElementById('nextBtnText');
+    const questionCounter = document.getElementById('questionCounter');
+    const progressBar = document.getElementById('progressBar');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const finalScore = document.getElementById('finalScore');
+    const finalMessage = document.getElementById('finalMessage');
+    const correctAnswersCount = document.getElementById('correctAnswersCount');
+    const averageTime = document.getElementById('averageTime');
+    const percentageScore = document.getElementById('percentageScore');
+    const nameForm = document.getElementById('nameForm');
+    const playerName = document.getElementById('playerName');
+    const leaderboardContainer = document.getElementById('leaderboardContainer');
+    const leaderboardContent = document.getElementById('leaderboardContent');
+    const scannerContainer = document.getElementById('scannerContainer');
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const processingIndicator = document.getElementById('processingIndicator');
+    const solutionContainer = document.getElementById('solutionContainer');
+    const solutionSteps = document.getElementById('solutionSteps');
+    const equationEditor = document.getElementById('equationEditor');
+    const equationInput = document.getElementById('equationInput');
+
+    // Mostrar selector de quiz
+    function showQuizSelector(difficulty) {
+      currentDifficulty = difficulty;
+      dashboard.style.display = 'none';
+      quizSelector.style.display = 'block';
+      
+      // Configurar título según dificultad
+      let title = '';
+      if (difficulty === 'simple') title = 'Derivadas Simples';
+      else if (difficulty === 'medium') title = 'Derivadas Medias';
+      else title = 'Derivadas Complejas';
+      
+      selectorTitle.textContent = `Selecciona un quiz de ${title}`;
+      
+      // Mostrar opciones de quiz
+      quizOptions.innerHTML = '';
+      quizzes[difficulty].forEach((quiz, index) => {
+        const quizOption = document.createElement('div');
+        quizOption.className = 'quiz-option';
+        quizOption.innerHTML = `
+          <h3>${quiz.title}</h3>
+          <p>${quiz.description || 'Pon a prueba tus conocimientos con este quiz'}</p>
+          <div class="quiz-meta">
+            <span><i class="fas fa-question-circle"></i> ${quiz.questions.length} preguntas</span>
+            <span><i class="fas fa-clock"></i> ${quiz.timePerQuestion} seg/pregunta</span>
+          </div>
+        `;
+        quizOption.addEventListener('click', () => startQuiz(difficulty, index));
+        quizOptions.appendChild(quizOption);
+      });
+    }
+
+    // Ocultar selector de quiz
+    function hideQuizSelector() {
+      quizSelector.style.display = 'none';
+      dashboard.style.display = 'flex';
+    }
+
+    // Comenzar quiz
+    function startQuiz(difficulty, quizIndex) {
+      currentDifficulty = difficulty;
+      currentQuizIndex = quizIndex;
+      currentQuiz = quizzes[difficulty][quizIndex];
+      currentQuestionIndex = 0;
+      score = 0;
+      responseTimes = [];
+      
+      quizSelector.style.display = 'none';
+      quizContainer.style.display = 'block';
+      
+      // Configurar tipo de quiz
+      let type = '';
+      if (difficulty === 'simple') type = 'Derivadas Simples';
+      else if (difficulty === 'medium') type = 'Derivadas Medias';
+      else type = 'Derivadas Complejas';
+      
+      quizType.textContent = `${type} - ${currentQuiz.title}`;
+      scoreDisplay.textContent = '0';
+      
+      loadQuestion();
+    }
+
+    // Cargar pregunta
+    function loadQuestion() {
+      const question = currentQuiz.questions[currentQuestionIndex];
+      timeLeft = currentQuiz.timePerQuestion;
+      startTime = Date.now();
+      
+      // Actualizar contador de preguntas
+      questionCounter.textContent = `Pregunta ${currentQuestionIndex + 1} de ${currentQuiz.questions.length}`;
+      
+      // Actualizar barra de progreso
+      progressBar.style.width = `${(currentQuestionIndex / currentQuiz.questions.length) * 100}%`;
+      
+      // Actualizar texto del botón siguiente
+      if (currentQuestionIndex === currentQuiz.questions.length - 1) {
+        nextBtnText.textContent = 'Finalizar';
+      } else {
+        nextBtnText.textContent = 'Siguiente';
+      }
+      
+      // Mostrar pregunta
+      questionElement.textContent = question.question;
+      
+      // Mostrar opciones
+      optionsElement.innerHTML = '';
+      question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'option';
+        optionElement.innerHTML = `
+          <div class="option-number">${String.fromCharCode(65 + index)}</div>
+          ${option}
+        `;
+        optionElement.addEventListener('click', () => selectOption(index, optionElement));
+        optionsElement.appendChild(optionElement);
+      });
+      
+      // Ocultar feedback
+      correctFeedback.style.display = 'none';
+      incorrectFeedback.style.display = 'none';
+      
+      // Deshabilitar botón siguiente
+      nextBtn.disabled = true;
+      
+      // Iniciar temporizador
+      startTimer();
+    }
+
+    // Seleccionar opción
+    function selectOption(index, element) {
+      // Deseleccionar cualquier opción previa
+      const options = document.querySelectorAll('.option');
+      options.forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      
+      // Seleccionar nueva opción
+      element.classList.add('selected');
+      selectedOption = index;
+      
+      // Calcular tiempo de respuesta
+      const responseTime = (Date.now() - startTime) / 1000;
+      responseTimes.push(responseTime);
+      
+      // Detener temporizador
+      stopTimer();
+      
+      // Verificar respuesta
+      checkAnswer();
+    }
+
+    // Verificar respuesta
+    function checkAnswer() {
+      const question = currentQuiz.questions[currentQuestionIndex];
+      const options = document.querySelectorAll('.option');
+      
+      // Deshabilitar todas las opciones
+      options.forEach(opt => {
+        opt.style.cursor = 'default';
+        opt.removeEventListener('click', selectOption);
+      });
+      
+      // Marcar respuesta correcta
+      options[question.correctAnswer].classList.add('correct');
+      
+      if (selectedOption === question.correctAnswer) {
+        // Respuesta correcta
+        score++;
+        scoreDisplay.textContent = score;
+        correctFeedback.style.display = 'block';
+        
+        // Mostrar frase motivacional aleatoria
+        const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
+        motivationalPhrase.textContent = randomPhrase;
+      } else {
+        // Respuesta incorrecta
+        options[selectedOption].classList.add('incorrect');
+        incorrectFeedback.style.display = 'block';
+        correctAnswer.textContent = question.options[question.correctAnswer];
+        explanation.textContent = question.explanation;
+      }
+      
+      // Habilitar botón siguiente
+      nextBtn.disabled = false;
+    }
+
+    // Siguiente pregunta
+    function nextQuestion() {
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex < currentQuiz.questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    // Mostrar resultados
+    function showResults() {
+      quizContainer.style.display = 'none';
+      resultsContainer.style.display = 'block';
+      
+      // Mostrar puntaje
+      finalScore.textContent = `${score}/${currentQuiz.questions.length}`;
+      correctAnswersCount.textContent = score;
+      
+      // Calcular tiempo promedio
+      const avgTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
+      averageTime.textContent = avgTime.toFixed(1) + 's';
+      
+      // Calcular porcentaje
+      const percentage = (score / currentQuiz.questions.length) * 100;
+      percentageScore.textContent = Math.round(percentage) + '%';
+      
+      // Mostrar mensaje según puntaje
+      let message = '';
+      
+      if (percentage >= 90) {
+        message = '¡Excelente trabajo! Dominas completamente este nivel. Considera probar un nivel más avanzado.';
+        createConfetti();
+      } else if (percentage >= 70) {
+        message = '¡Buen trabajo! Tienes un buen dominio del tema, pero aún hay margen para mejorar.';
+      } else if (percentage >= 50) {
+        message = '¡Sigue practicando! Has aprobado, pero necesitas reforzar algunos conceptos.';
+      } else {
+        message = '¡No te rindas! Revisa los conceptos básicos y vuelve a intentarlo. La práctica hace al maestro.';
+      }
+      
+      finalMessage.textContent = message;
+      
+      // Mostrar formulario para guardar nombre si el puntaje es mayor a 0
+      if (score > 0) {
+        nameForm.style.display = 'block';
+      } else {
+        nameForm.style.display = 'none';
+      }
+    }
+
+    // Guardar puntuación
+    function saveScore() {
+      const name = playerName.value.trim();
+      if (!name) {
+        alert('Por favor ingresa tu nombre para guardar tu puntuación.');
+        return;
+      }
+      
+      // Obtener puntuaciones existentes o inicializar array vacío
+      let scores = JSON.parse(localStorage.getItem('derivabotScores')) || [];
+      
+      // Agregar nueva puntuación
+      const newScore = {
+        name: name,
+        difficulty: currentDifficulty,
+        quizTitle: currentQuiz.title,
+        score: score,
+        totalQuestions: currentQuiz.questions.length,
+        percentage: Math.round((score / currentQuiz.questions.length) * 100),
+        date: new Date().toISOString()
+      };
+      
+      scores.push(newScore);
+      
+      // Guardar en localStorage
+      localStorage.setItem('derivabotScores', JSON.stringify(scores));
+      
+      // Mostrar mensaje de éxito
+      alert(`¡Puntuación guardada correctamente, ${name}!`);
+      nameForm.style.display = 'none';
+    }
+
+    // Mostrar tabla de clasificación
+    function showLeaderboard() {
+      dashboard.style.display = 'none';
+      leaderboardContainer.style.display = 'block';
+      
+      // Cargar y mostrar las puntuaciones
+      loadLeaderboard();
+    }
+
+    // Cargar datos de clasificación
+    function loadLeaderboard() {
+      // Obtener puntuaciones del localStorage
+      const scores = JSON.parse(localStorage.getItem('derivabotScores')) || [];
+      
+      // Filtrar por dificultad actual
+      const filteredScores = scores.filter(score => score.difficulty === currentLeaderboardTab);
+      
+      // Ordenar por porcentaje descendente
+      filteredScores.sort((a, b) => b.percentage - a.percentage);
+      
+      // Generar HTML para la tabla
+      let html = '';
+      
+      if (filteredScores.length > 0) {
+        html = `
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Jugador</th>
+                <th>Quiz</th>
+                <th>Puntuación</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        filteredScores.slice(0, 20).forEach((score, index) => {
+          html += `
+            <tr>
+              <td class="rank">${index + 1}</td>
+              <td class="player-name">${score.name}</td>
+              <td>${score.quizTitle}</td>
+              <td class="player-score">${score.score}/${score.totalQuestions} (${score.percentage}%)</td>
+            </tr>
+          `;
+        });
+        
+        html += `</tbody></table>`;
+      } else {
+        html = '<div class="no-scores">No hay puntuaciones registradas para esta dificultad.</div>';
+      }
+      
+      leaderboardContent.innerHTML = html;
+      
+      // Actualizar pestañas activas
+      document.querySelectorAll('.difficulty-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.toLowerCase() === currentLeaderboardTab) {
+          tab.classList.add('active');
+        }
+      });
+    }
+
+    // Cambiar pestaña de clasificación
+    function changeLeaderboardTab(difficulty) {
+      currentLeaderboardTab = difficulty;
+      loadLeaderboard();
+    }
+
+    // Crear efecto de confeti
+    function createConfetti() {
+      const colors = ['#7b2cbf', '#2a9d8f', '#f8961e', '#38b000', '#d00000'];
+      
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = Math.random() * 10 + 5 + 'px';
+        confetti.style.height = Math.random() * 10 + 5 + 'px';
+        confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+        document.body.appendChild(confetti);
+        
+        // Eliminar después de la animación
+        setTimeout(() => {
+          confetti.remove();
+        }, 5000);
+      }
+    }
+
+    // Reiniciar quiz
+    function restartQuiz() {
+      resultsContainer.style.display = 'none';
+      startQuiz(currentDifficulty, currentQuizIndex);
+    }
+
+    // Seleccionar otro quiz
+    function selectAnotherQuiz() {
+      resultsContainer.style.display = 'none';
+      showQuizSelector(currentDifficulty);
+    }
+
+    // Volver al dashboard
+    function returnToDashboard() {
+      quizSelector.style.display = 'none';
+      quizContainer.style.display = 'none';
+      resultsContainer.style.display = 'none';
+      leaderboardContainer.style.display = 'none';
+      scannerContainer.style.display = 'none';
+      dashboard.style.display = 'flex';
+    }
+
+    // Temporizador
+    function startTimer() {
+      timerElement.textContent = timeLeft;
+      timerElement.className = 'timer';
+      
+      if (timeLeft <= 5) {
+        timerElement.classList.add('time-warning');
+      }
+      
+      if (timeLeft <= 3) {
+        timerElement.classList.add('time-danger');
+      }
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        timerElement.textContent = timeLeft;
+        
+        if (timeLeft <= 5) {
+          timerElement.classList.add('time-warning');
+        }
+        
+        if (timeLeft <= 3) {
+          timerElement.classList.add('time-danger');
+        }
+        
+        if (timeLeft <= 0) {
+          stopTimer();
+          timeUp();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timer);
+    }
+
+    function timeUp() {
+      const options = document.querySelectorAll('.option');
+      options.forEach(opt => {
+        opt.style.cursor = 'default';
+        opt.removeEventListener('click', selectOption);
+      });
+      
+      const question = currentQuiz.questions[currentQuestionIndex];
+      const correctOption = document.querySelectorAll('.option')[question.correctAnswer];
+      correctOption.classList.add('correct');
+      
+      // Registrar tiempo máximo como tiempo de respuesta
+      responseTimes.push(currentQuiz.timePerQuestion);
+      
+      incorrectFeedback.style.display = 'block';
+      correctAnswer.textContent = question.options[question.correctAnswer];
+      explanation.textContent = question.explanation;
+      
+      nextBtn.disabled = false;
+    }
+
+    // Funciones para el escáner de derivadas
+    function showScanner() {
+      dashboard.style.display = 'none';
+      scannerContainer.style.display = 'block';
+      previewContainer.style.display = 'none';
+      processingIndicator.style.display = 'none';
+      solutionContainer.style.display = 'none';
+      equationEditor.style.display = 'none';
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      // Verificar tamaño del archivo (máx 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('El archivo es demasiado grande. El tamaño máximo permitido es 5MB.');
+        return;
+      }
+      
+      // Verificar tipo de archivo
+      if (!file.type.match('image.*')) {
+        alert('Por favor sube un archivo de imagen (JPG, PNG).');
+        return;
+      }
+      
+      // Mostrar vista previa
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImage.src = e.target.result;
+        previewContainer.style.display = 'block';
+        uploadedImage = file;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearImage() {
+      fileInput.value = '';
+      previewContainer.style.display = 'none';
+      uploadedImage = null;
+    }
+
+    function processImage() {
+      if (!uploadedImage) {
+        alert('Por favor sube una imagen primero.');
+        return;
+      }
+      
+      // Mostrar indicador de procesamiento
+      previewContainer.style.display = 'none';
+      processingIndicator.style.display = 'block';
+      solutionContainer.style.display = 'none';
+      equationEditor.style.display = 'none';
+      
+      // Usar Tesseract.js para OCR
+      Tesseract.recognize(
+        uploadedImage,
+        'eng',
+        { logger: m => console.log(m) }
+      ).then(({ data: { text } }) => {
+        console.log('Texto reconocido:', text);
+        
+        // Procesar el texto para extraer la ecuación
+        const equation = extractEquation(text);
+        
+        // Mostrar editor de ecuaciones con el texto reconocido
+        showEquationEditor(equation);
+      }).catch(err => {
+        console.error('Error al procesar la imagen:', err);
+        alert('Error al procesar la imagen. Por favor intenta con una imagen más clara.');
+        processingIndicator.style.display = 'none';
+        previewContainer.style.display = 'block';
+      });
+    }
+
+    function extractEquation(text) {
+      // Simplificación: buscar líneas que parezcan ecuaciones matemáticas
+      // En una implementación real, esto sería mucho más sofisticado
+      const lines = text.split('\n');
+      const mathLines = lines.filter(line => {
+        // Buscar patrones que parezcan ecuaciones
+        return line.match(/[a-zA-Z][\+\-\*\/\^=]/) || 
+               line.match(/[0-9][\+\-\*\/\^=]/) ||
+               line.match(/[a-zA-Z]\(/) ||
+               line.match(/[0-9]\(/);
+      });
+      
+      return mathLines[0] || text.split('\n')[0] || 'x^2 + 3x - 5';
+    }
+
+    function showEquationEditor(equation) {
+      processingIndicator.style.display = 'none';
+      equationInput.value = equation;
+      equationEditor.style.display = 'block';
+    }
+
+    function solveEditedEquation() {
+      const equation = equationInput.value.trim();
+      if (!equation) {
+        alert('Por favor ingresa una ecuación válida.');
+        return;
+      }
+      
+      // Simular solución paso a paso (en una implementación real usarías un motor matemático)
+      const solution = generateStepByStepSolution(equation);
+      
+      // Mostrar solución
+      showSolution(solution);
+    }
+
+    function generateStepByStepSolution(equation) {
+      // Esta es una simulación - en una implementación real usarías un motor matemático como math.js
+      const steps = [];
+      
+      // Paso 1: Mostrar la ecuación original
+      steps.push({
+        description: "Ecuación original:",
+        math: equation
+      });
+      
+      // Paso 2: Identificar tipo de función
+      if (equation.includes('^')) {
+        steps.push({
+          description: "Identificamos una función potencial (x^n). Aplicaremos la regla de potencias.",
+          math: "d/dx(x^n) = n·x^{n-1}"
+        });
+      } else if (equation.includes('sin') || equation.includes('cos') || equation.includes('tan')) {
+        steps.push({
+          description: "Identificamos una función trigonométrica. Aplicaremos las reglas correspondientes.",
+          math: "d/dx(sin(x)) = cos(x), d/dx(cos(x)) = -sin(x), etc."
+        });
+      } else if (equation.includes('ln') || equation.includes('log')) {
+        steps.push({
+          description: "Identificamos una función logarítmica. Aplicaremos las reglas correspondientes.",
+          math: "d/dx(ln(x)) = 1/x"
+        });
+      } else if (equation.includes('e^')) {
+        steps.push({
+          description: "Identificamos una función exponencial. Aplicaremos las reglas correspondientes.",
+          math: "d/dx(e^x) = e^x"
+        });
+      }
+      
+      // Paso 3: Derivar término por término
+      steps.push({
+        description: "Derivando término por término:",
+        math: "d/dx(" + equation + ") = ..."
+      });
+      
+      // Paso 4: Mostrar resultado final (simulado)
+      let result = "";
+      if (equation.includes('x^2')) {
+        result = equation.replace('x^2', '2x');
+      } else if (equation.includes('x^3')) {
+        result = equation.replace('x^3', '3x^2');
+      } else if (equation.includes('sin(x)')) {
+        result = equation.replace('sin(x)', 'cos(x)');
+      } else if (equation.includes('cos(x)')) {
+        result = equation.replace('cos(x)', '-sin(x)');
+      } else if (equation.includes('e^x')) {
+        result = equation.replace('e^x', 'e^x');
+      } else {
+        // Resultado genérico si no reconocemos el patrón
+        result = "d/dx(" + equation + ")";
+      }
+      
+      steps.push({
+        description: "Resultado final:",
+        math: result
+      });
+      
+      return steps;
+    }
+
+    function showSolution(steps) {
+      equationEditor.style.display = 'none';
+      solutionSteps.innerHTML = '';
+      
+      steps.forEach((step, index) => {
+        const stepElement = document.createElement('div');
+        stepElement.className = 'solution-step';
+        stepElement.innerHTML = `
+          <div>
+            <span class="step-number">${index + 1}</span>
+            <span class="step-description">${step.description}</span>
+          </div>
+          <div class="math-expression">${step.math}</div>
+        `;
+        solutionSteps.appendChild(stepElement);
+      });
+      
+      solutionContainer.style.display = 'block';
+      
+      // Renderizar MathJax para mostrar notación matemática
+      if (window.MathJax) {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, solutionSteps]);
+      }
+    }
+
+    function scanAnother() {
+      clearImage();
+      solutionContainer.style.display = 'none';
+      uploadArea.style.display = 'block';
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', () => {
+      // Ocultar contenedores no necesarios al inicio
+      quizSelector.style.display = 'none';
+      quizContainer.style.display = 'none';
+      resultsContainer.style.display = 'none';
+      leaderboardContainer.style.display = 'none';
+      scannerContainer.style.display = 'none';
+      nameForm.style.display = 'none';
+      
+      // Configurar MathJax para renderizado de ecuaciones
+      if (window.MathJax) {
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true,
+            processEnvironments: true
+          },
+          CommonHTML: { linebreaks: { automatic: true } },
+          "HTML-CSS": { linebreaks: { automatic: true } },
+          SVG: { linebreaks: { automatic: true } }
+        });
+      }
+    });
+  </script>
+</body>
+</html> 
