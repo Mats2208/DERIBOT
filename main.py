@@ -6,7 +6,7 @@ import requests
 app = Flask(__name__)
 
 # ✅ Clave API válida de OpenRouter (solo para pruebas locales)
-API_KEY = "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"
+API_KEY = "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"
 
 # ✅ Modelo que ya funciona comprobado en pruebas
 MODEL = "meta-llama/llama-3.3-8b-instruct:free"
@@ -56,17 +56,21 @@ def resolver():
             derivadas['pasos'][str(var)] = pasos
 
         # 🔎 Prompt para la IA
-        prompt = f"""
-Explica paso a paso cómo resolver derivadas parciales de la siguiente función:
+            prompt = f"""
+Eres DeriBot y estas aquí para explicar el ejercicio paso a paso. 
+Por favor, si vas a poner una formula, pona en texto plano, el interpreter de latex no funciona asi que NO USES LATEX, DONT USE LATEX. Tampco uses Markdown, texto plano.
+No respondas con $$ ni nada asi:
+Ejemplo: $$ \\frac{{\\partial f}}{{\\partial x}} = 2xy $$
 
 Función original:
-f(x, y, z) = {latex(expr)}
+$$f(x, y, z) = {latex(expr)}$$
 
-Resultado ∂f/∂x = {latex(dx_expr)}
-Resultado ∂f/∂y = {latex(dy_expr)}
-Resultado ∂f/∂z = {latex(dz_expr)}
+Resultado de derivadas:
+- $$\\frac{{\\partial f}}{{\\partial x}} = {latex(dx_expr)}$$
+- $$\\frac{{\\partial f}}{{\\partial y}} = {latex(dy_expr)}$$
+- $$\\frac{{\\partial f}}{{\\partial z}} = {latex(dz_expr)}$$
 
-Explica con detalle cada paso, no es necesario tu presentacion ni agradecimientos. Solo di que eres DeriBot y que estas aqui para explicar el ejercicio paso a paso y luego procede a explicar
+Explica con claridad y estructura paso a paso cada derivada parcial.
 """
 
         # 🔗 Preparar headers y payload

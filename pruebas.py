@@ -1,7 +1,7 @@
 import requests
 
 # Tu clave API (pruebas locales solamente)
-API_KEY = "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"
+API_KEY = "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"
 
 # Modelo a probar (puedes cambiarlo a "mistralai/mixtral-8x7b-instruct", etc.)
 MODEL = "meta-llama/llama-3.3-8b-instruct:free"
