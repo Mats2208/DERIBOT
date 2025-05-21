@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathSolver - Calculadora de Derivadas Parciales</title>
+  <script src="https://unpkg.com/mathlive"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+<body>
+  <div class="particles-container" id="particles-js"></div>
+  
+  <div class="container">
+    <header>
+      <div class="logo">
+        <span class="math-icon">∂</span>
+        <h1>MathSolver</h1>
+      </div>
+      <p class="tagline">Calculadora avanzada de derivadas parciales</p>
+    </header>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Ingresa tu función</h2>
+        <p class="subtitle">Utiliza variables x, y, z para calcular derivadas parciales</p>
+      </div>
+      
+      <form action="/resolver" method="POST" onsubmit="return enviarFormula();">
+        <div class="input-container">
+          <math-field id="math" virtual-keyboard-mode="manual">
+            x^{2}y + \sin{(xz)}
+          </math-field>
+          <div class="keyboard-toggle" id="toggleKeyboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M6 8h.001"/><path d="M10 8h.001"/><path d="M14 8h.001"/><path d="M18 8h.001"/><path d="M8 12h.001"/><path d="M12 12h.001"/><path d="M16 12h.001"/><path d="M7 16h10"/></svg>
+          </div>
+        </div>
+        
+        <div class="examples">
+          <p>Ejemplos:</p>
+          <button type="button" class="example-btn" onclick="setExample('x^{2}y + \\sin{(xz)}')">x²y + sin(xz)</button>
+          <button type="button" class="example-btn" onclick="setExample('\\ln{(xy)} + z^3')">ln(xy) + z³</button>
+          <button type="button" class="example-btn" onclick="setExample('e^{xyz} + \\cos{(x+y)}')">e^(xyz) + cos(x+y)</button>
+        </div>
+
+        <input type="hidden" name="formula" id="formula">
+        <button type="submit" class="submit-btn">
+          <span>Calcular derivadas</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <footer>
+      <p>Desarrollado con <span class="heart">❤</span> para matemáticos y estudiantes</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    // Configuración de partículas
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: "#3498db" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5, random: false },
+        size: { value: 3, random: true },
+        line_linked: { enable: true, distance: 150, color: "#3498db", opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } },
+        modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+      },
+      retina_detect: true
+    });
+
+    // Función para enviar la fórmula
+    function enviarFormula() {
+      const mathField = document.getElementById("math");
+      const latex = mathField.getValue("latex");
+      document.getElementById("formula").value = latex;
+      return true;
+    }
+
+    // Función para establecer ejemplos
+    function setExample(formula) {
+      const mathField = document.getElementById("math");
+      mathField.setValue(formula);
+    }
+
+    // Toggle del teclado virtual
+    document.getElementById('toggleKeyboard').addEventListener('click', function() {
+      const mathField = document.getElementById('math');
+      if (mathField.virtualKeyboardMode === 'manual') {
+        mathField.virtualKeyboardMode = 'onfocus';
+        mathField.focus();
+      } else {
+        mathField.virtualKeyboardMode = 'manual';
+      }
+    });
+  </script>
+</body>
+</html>
