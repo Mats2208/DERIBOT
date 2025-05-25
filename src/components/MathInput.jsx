@@ -1,10 +1,12 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { Calculator, Zap } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import { Calculator, Zap, Home } from "lucide-react"
 
 const MathInput = ({ onSubmit }) => {
   const mathFieldRef = useRef(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     import("https://unpkg.com/mathlive").then(() => {
@@ -43,6 +45,17 @@ const MathInput = ({ onSubmit }) => {
             <code className="bg-purple-700 px-2 py-1 rounded text-sm">y</code> y{" "}
             <code className="bg-purple-700 px-2 py-1 rounded text-sm">z</code> para calcular derivadas parciales.
           </p>
+        </div>
+
+        {/* Botón para volver al inicio */}
+        <div className="px-6 pt-4">
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg font-medium transition-all duration-200 text-sm border border-purple-200 hover:border-purple-300"
+          >
+            <Home className="w-4 h-4" />
+            Volver al inicio
+          </button>
         </div>
 
         <div className="p-6">
