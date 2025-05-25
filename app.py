@@ -6,6 +6,7 @@ import requests
 from dotenv import load_dotenv
 import os
 
+# ⚙️ Configuración básica
 app = Flask(__name__, static_folder="dist", static_url_path="/")
 CORS(app)
 
@@ -13,9 +14,10 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 MODEL = "meta-llama/llama-3.3-8b-instruct:free"
 
+# 📘 Ruta de procesamiento de derivadas
 @app.route("/resolver", methods=["POST"])
 def resolver():
-    formula_latex = request.json['formula']
+    formula_latex = request.json.get('formula')
     x, y, z = symbols('x y z')
 
     try:
@@ -89,14 +91,15 @@ Explica con claridad y estructura paso a paso cada derivada parcial.
 
     return jsonify(derivadas)
 
-# ✅ Servir archivos estáticos desde dist/
-@app.route('/')
-def serve_index():
-    return send_from_directory(app.static_folder, 'index.html')
+# 🧾 Ruta para servir React + Vite
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
-@app.errorhandler(404)
-def not_found(e):
-    return send_from_directory(app.static_folder, 'index.html')
-
+# ▶️ Ejecutar el servidor
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False, host="0.0.0.0", port=5000)
