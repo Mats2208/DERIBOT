@@ -1,34 +1,25 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, send_from_directory, jsonify
 from flask_cors import CORS
 from sympy import symbols, diff, latex
 from sympy.parsing.latex import parse_latex
-from flask import jsonify
 import requests
 from dotenv import load_dotenv
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="dist", static_url_path="/")
 CORS(app)
+
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
-
-# ✅ Modelo que ya funciona comprobado en pruebas
 MODEL = "meta-llama/llama-3.3-8b-instruct:free"
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/resolver', methods=['POST'])
+@app.route("/resolver", methods=["POST"])
 def resolver():
     formula_latex = request.json['formula']
     x, y, z = symbols('x y z')
 
     try:
-        # Parsear fórmula de entrada
         expr = parse_latex(formula_latex)
-
-        # Derivadas parciales
         dx_expr = diff(expr, x)
         dy_expr = diff(expr, y)
         dz_expr = diff(expr, z)
@@ -41,7 +32,6 @@ def resolver():
             'pasos': {}
         }
 
-        # Generar pasos intermedios para cada variable
         terminos = expr.as_ordered_terms()
         for var in [x, y, z]:
             pasos = []
@@ -59,26 +49,22 @@ def resolver():
                 })
             derivadas['pasos'][str(var)] = pasos
 
-        # 🔎 Prompt para la IA
-            prompt = f"""
+        prompt = f"""
 Eres DeriBot y estas aquí para explicar el ejercicio paso a paso, se educado y presentate en cada promt de respuesta que te haga el usuario.
 La respuesta debe estar detallada de inicio a fin, no tomes el camino corto, explica todo, piensa que son alumnos que recien empiezan, pero obvio no se lo digas a ellos, vos solo explica todo bien.
 Por favor, si vas a poner una formula, pona en texto plano, el interpreter de latex no funciona asi que NO USES LATEX, DONT USE LATEX. Tampco uses Markdown, texto plano.
-No respondas con $$ ni nada asi:
-Ejemplo: $$ \\frac{{\\partial f}}{{\\partial x}} = 2xy $$
 
 Función original:
-$$f(x, y, z) = {latex(expr)}$$
+f(x, y, z) = {latex(expr)}
 
 Resultado de derivadas:
-- $$\\frac{{\\partial f}}{{\\partial x}} = {latex(dx_expr)}$$
-- $$\\frac{{\\partial f}}{{\\partial y}} = {latex(dy_expr)}$$
-- $$\\frac{{\\partial f}}{{\\partial z}} = {latex(dz_expr)}$$
+- ∂f/∂x = {latex(dx_expr)}
+- ∂f/∂y = {latex(dy_expr)}
+- ∂f/∂z = {latex(dz_expr)}
 
 Explica con claridad y estructura paso a paso cada derivada parcial.
 """
 
-        # 🔗 Preparar headers y payload
         headers = {
             "Authorization": f"Bearer {API_KEY}",
             "Content-Type": "application/json"
@@ -92,12 +78,10 @@ Explica con claridad y estructura paso a paso cada derivada parcial.
             ]
         }
 
-        # 📡 Enviar petición a OpenRouter
         response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
         response.raise_for_status()
         result = response.json()
 
-        # ✅ Agregar explicación generada por IA
         derivadas['explicacion_ia'] = result["choices"][0]["message"]["content"]
 
     except Exception as e:
@@ -105,5 +89,14 @@ Explica con claridad y estructura paso a paso cada derivada parcial.
 
     return jsonify(derivadas)
 
-if __name__ == '__main__':
+# ✅ Servir archivos estáticos desde dist/
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.errorhandler(404)
+def not_found(e):
+    return send_from_directory(app.static_folder, 'index.html')
+
+if __name__ == "__main__":
     app.run(debug=True)

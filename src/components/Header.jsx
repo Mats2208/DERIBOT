@@ -15,9 +15,11 @@ export default function Header() {
   return (
     <header className="bg-white shadow-lg border-b-2 border-purple-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
+        <div className="flex justify-between items-center h-16">          {/* Logo */}
+          <div 
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
             <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-500 rounded-xl flex items-center justify-center text-white shadow-lg">
               <Bot className="w-6 h-6" />
             </div>
@@ -27,22 +29,32 @@ export default function Header() {
               </h1>
               <p className="text-xs text-gray-500 -mt-1">Sistema de Aprendizaje</p>
             </div>
-          </div>
-
-          {/* Navigation Desktop */}
+          </div>          {/* Navigation Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#inicio" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+            <button 
+              onClick={() => navigate("/")}
+              className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
+            >
               Inicio
-            </a>
-            <a href="#quizzes" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+            </button>
+            <button 
+              onClick={() => navigate("/quiziz/facil")}
+              className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
+            >
               Quizzes
-            </a>
-            <a href="#ranking" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+            </button>
+            <button 
+              onClick={() => navigate("/ranking")}
+              className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
+            >
               Ranking
-            </a>
-            <a href="#solver" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+            </button>
+            <button 
+              onClick={() => navigate("/solver")}
+              className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
+            >
               Solver
-            </a>
+            </button>
           </nav>          {/* CTA Button Desktop */}
           <div className="hidden md:flex">
             <button 
@@ -62,23 +74,34 @@ export default function Header() {
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
-        </div>
-
-        {/* Mobile Navigation */}
+        </div>        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-4">
-              <a href="#inicio" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+              <button 
+                onClick={() => navigate("/")}
+                className="text-gray-700 hover:text-purple-600 font-medium transition-colors text-left"
+              >
                 Inicio
-              </a>
-              <a href="#quizzes" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+              </button>
+              <button 
+                onClick={() => navigate("/quiziz/facil")}
+                className="text-gray-700 hover:text-purple-600 font-medium transition-colors text-left"
+              >
                 Quizzes
-              </a>
-              <a href="#ranking" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+              </button>
+              <button 
+                onClick={() => navigate("/ranking")}
+                className="text-gray-700 hover:text-purple-600 font-medium transition-colors text-left"
+              >
                 Ranking
-              </a>              <a href="#solver" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+              </button>
+              <button 
+                onClick={() => navigate("/solver")}
+                className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-600 transition-all duration-200 shadow-lg w-full"
+              >
                 Solver
-              </a>
+              </button>
               <button 
                 onClick={() => navigate("/solver")}
                 className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-6 py-2 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-600 transition-all duration-200 shadow-lg w-full"
