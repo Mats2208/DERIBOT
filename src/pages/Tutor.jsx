@@ -9,17 +9,17 @@ const Solver = () => {
   const [loading, setLoading] = useState(false)
   const [showResult, setShowResult] = useState(false)
 
-  const handleResolver = async (formulaLatex, orden) => {
+  const handleResolver = async (formulaLatex) => {
     try {
       setLoading(true)
-      setShowResult(true)
+      setShowResult(true) // Ocultar MathInput inmediatamente
 
-      const res = await fetch("http://127.0.0.1:5000/resolver", {
+      const res = await fetch("https://deribot.onrender.com/resolver", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ formula: formulaLatex, orden }), // ahora envía orden
+        body: JSON.stringify({ formula: formulaLatex }),
       })
 
       const data = await res.json()

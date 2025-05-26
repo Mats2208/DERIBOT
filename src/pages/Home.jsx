@@ -1,12 +1,11 @@
 "use client"
 
 import { useNavigate } from "react-router-dom"
-import { Calculator, Brain, Rocket, Trophy, Baby , Play, Bot, Sparkles, Target, Users } from 'lucide-react'
+import { Calculator, Brain, Rocket, Trophy, Baby , Play, Bot, Sparkles, ShieldUser , Users } from 'lucide-react'
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 
 const Card = ({ title, description, icon, type, onClick }) => {
-  // Configurar colores según el tipo de tarjeta
   const colors = {
     simple: {
       icon: "text-purple-700",
@@ -37,6 +36,12 @@ const Card = ({ title, description, icon, type, onClick }) => {
       border: "border-blue-200 hover:border-blue-400",
       gradient: "from-blue-50 to-blue-100",
       button: "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600",
+    },
+      Tutor: {
+      icon: "text-green-600",
+      border: "border-green-200 hover:border-green-400",
+      gradient: "from-green-50 to-green-100",
+      button: "bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600",
     },
   }
 
@@ -165,6 +170,13 @@ export default function Home() {
                 icon={<Calculator />}
                 type="scanner"
                 onClick={() => navigate("/solver")}
+              />
+              <Card
+                title="Tutor IA"
+                description="Resuelve y practica junto a nuestro IA tutor de ultima tecnologia."
+                icon={<ShieldUser  />}
+                type="Tutor"
+                onClick={() => navigate("/Tutor")}
               />
             </div>
           </div>

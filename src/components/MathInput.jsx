@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { Calculator, Zap, Home } from "lucide-react"
 
 const MathInput = ({ onSubmit }) => {
+  const [orden, setOrden] = useState(1)
   const mathFieldRef = useRef(null)
   const navigate = useNavigate()
 
@@ -19,7 +20,7 @@ const MathInput = ({ onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     const latex = mathFieldRef.current.getValue("latex")
-    onSubmit(latex)
+    onSubmit(latex, orden)
   }
 
   const setExample = (latex) => {
@@ -98,6 +99,18 @@ const MathInput = ({ onSubmit }) => {
           </div>
 
           {/* Botón de enviar */}
+          {/* Selector de orden de derivadas */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Orden de derivada (máximo 3):</label>
+            <select
+              onChange={(e) => setOrden(parseInt(e.target.value))}
+              className="w-full p-3 rounded-xl border-2 border-purple-200 bg-purple-50 text-purple-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+            >
+              <option value={1}>Primera derivada</option>
+              <option value={2}>Segunda derivada</option>
+              <option value={3}>Tercera derivada</option>
+            </select>
+          </div>
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg text-lg flex items-center justify-center gap-3 transform hover:-translate-y-1"
