@@ -1,83 +1,66 @@
-// src/pages/Solver.jsx
-import { useState } from "react"
-import MathInput from "../components/MathInput"
-import MathResult from "../components/MathResult"
+import { useState } from "react";
+import MathInput from "../components/MathInput";
+import MathCheckAnswers from "../components/MathCheckAnswers";
+import MathResultTutor from "../components/MathResultTutor";
 
+export default function Tutor() {
+  const [fase, setFase] = useState("input");
+  const [dataBase, setDataBase] = useState(null);
+  const [resultado, setResultado] = useState(null);
 
-const Solver = () => {
-  const [resultado, setResultado] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [showResult, setShowResult] = useState(false)
-
-  const handleResolver = async (formulaLatex) => {
+  // Paso 1: Enviar fórmula al backend
+  const manejarFormula = async (formula) => {
     try {
-      setLoading(true)
-      setShowResult(true) // Ocultar MathInput inmediatamente
-
-      const res = await fetch("https://deribot.onrender.com/resolver", {
+      const res = await fetch("http://127.0.0.1:5000/solverTutorInit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ formula: formulaLatex }),
-      })
-
-      const data = await res.json()
-      setResultado(data)
-    } catch (err) {
-      setResultado({ error: "Error de conexión con el servidor Flask." })
-    } finally {
-      setLoading(false)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ formula }),
+      });
+      const json = await res.json();
+      setDataBase({ formula, dx: json.dx });
+      setFase("check");
+    } catch (error) {
+      console.error("❌ Error enviando fórmula:", error.message);
     }
-  }
+  };
 
-  const handleBack = () => {
-    setShowResult(false)
-    setResultado(null)
-    setLoading(false)
-  }
+  // Paso 2: Enviar respuestas del usuario
+  const manejarVerificacion = async (dy, dz) => {
+    try {
+      const res = await fetch("http://127.0.0.1:5000/solverTutorCheck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          formula: dataBase.formula,
+          dy,
+          dz,
+        }),
+      });
+      const json = await res.json();
+      setResultado(json);
+      setFase("result");
+    } catch (error) {
+      console.error("❌ Error verificando respuestas:", error.message);
+    }
+  };
+
+  const reiniciar = () => {
+    setFase("input");
+    setDataBase(null);
+    setResultado(null);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 px-4 py-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-purple-700 mb-2">Calculadora de Derivadas</h1>
-          <p className="text-gray-600 text-lg">Resuelve derivadas parciales paso a paso con IA</p>
-        </div>
+    <div className="max-w-4xl mx-auto px-4 mt-10">
+      <h1 className="text-3xl font-bold mb-6 text-purple-700">Tutor de Derivadas</h1>
 
-        {/* Mostrar MathInput solo si no estamos en modo resultado */}
-        {!showResult && <MathInput onSubmit={handleResolver} />}
-
-        {/* Mostrar loading cuando se está calculando */}
-        {loading && showResult && (
-          <div className="flex items-center justify-center mt-8">
-            <div className="bg-white rounded-2xl shadow-xl border-2 border-purple-100 p-8 text-center max-w-md mx-auto">
-              <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-6"></div>
-              <p className="text-purple-700 font-semibold text-xl mb-2">Calculando derivadas...</p>
-              <p className="text-gray-500 text-sm">Esto puede tomar unos segundos</p>
-              <div className="mt-4 flex justify-center">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-                  <div
-                    className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
-                    style={{ animationDelay: "0.1s" }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
-                    style={{ animationDelay: "0.2s" }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Mostrar resultado cuando esté listo */}
-        {resultado && !loading && showResult && <MathResult resultado={resultado} onBack={handleBack} />}
-      </div>
+      {fase === "input" && <MathInput onSubmit={manejarFormula} />}
+      {fase === "check" && dataBase && (
+        <MathCheckAnswers base={dataBase} onSubmit={manejarVerificacion} onBack={reiniciar} />
+      )}
+      {fase === "result" && resultado && (
+        <MathResultTutor resultado={resultado} onBack={reiniciar} />
+      )}
     </div>
-  )
+  );
 }
-
-export default Solver

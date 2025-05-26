@@ -42,6 +42,39 @@ def parse_formula_safe(formula_latex):
             x, y, z = symbols('x y z')
             return x**2 + y**2 + z**2  # Función por defecto
 
+def get_ia_explicacion(expr, variable):
+    prompt = f"""
+La expresión es: f(x,y,z) = {safe_latex(expr)}.
+El estudiante ingresó una derivada incorrecta respecto a {variable}.
+
+Explica paso a paso cómo derivar esta expresión respecto a {variable}.
+Incluye las reglas aplicadas y los pasos intermedios. Usa LaTeX para las fórmulas.
+"""
+
+    if not API_KEY:
+        return "API key no configurada."
+    
+    try:
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": MODEL,
+            "messages": [
+                {"role": "system", "content": "Eres un profesor de cálculo experto en explicar derivadas paso a paso usando LaTeX."},
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens": 1500,
+            "temperature": 0.7
+        }
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+        if response.status_code == 200:
+            return response.json()["choices"][0]["message"]["content"]
+        return "Explicación de IA no disponible en este momento."
+    except Exception as e:
+        return f"Error generando explicación IA: {str(e)}"
+
 def get_derivative_steps(expr, variable, orden=1):
     """Genera pasos detallados para la derivación de una expresión"""
     pasos = []
@@ -266,16 +299,9 @@ Derivadas parciales de primer orden:
 Eres DeriBot, un asistente educativo especializado en cálculo diferencial. 
 
 {resultado_texto}
-
-Explica de manera clara y educativa:
-1. Qué representa cada derivada parcial de primer orden
-2. Las reglas de derivación aplicadas en cada paso
-3. El significado de las derivadas de orden superior si las hay
-4. Cómo se aplicó la regla de la suma para descomponer la función
-5. La interpretación geométrica o física si es relevante
-
-IMPORTANTE: Puedes usar LaTeX para fórmulas matemáticas usando la sintaxis $formula$ para inline y $$formula$$ para display.
-Ejemplo: "La derivada $\\frac{{\\partial f}}{{\\partial x}}$ representa la tasa de cambio..."
+Eres DeriBot y estas aquí para explicar el ejercicio paso a paso, se educado y presentate en cada promt de respuesta que te haga el usuario.
+La respuesta debe estar detallada de inicio a fin, no tomes el camino corto, explica todo, piensa que son alumnos que recien empiezan, pero obvio no se lo digas a ellos, vos solo explica todo bien.
+Por favor, si vas a poner una formula, pona en texto plano, el interpreter de latex no funciona asi que NO USES LATEX, DONT USE LATEX. Tampco uses Markdown, texto plano.Ejemplo: "La derivada $\\frac{{\\partial f}}{{\\partial x}}$ representa la tasa de cambio..."
 """
 
             if API_KEY:
@@ -321,6 +347,67 @@ Ejemplo: "La derivada $\\frac{{\\partial f}}{{\\partial x}}$ representa la tasa 
         }), 400
 
     return jsonify(derivadas)
+
+def comparar_respuestas(respuesta_usuario, derivada_correcta):
+    try:
+        expr_usuario = parse_formula_safe(respuesta_usuario)
+        return expr_usuario.equals(derivada_correcta)
+    except:
+        return False
+
+
+
+
+@app.route("/solverTutorInit", methods=["POST"])
+def solver_tutor_init():
+    try:
+        data = request.json
+        formula_latex = data.get('formula', '')
+        x, y, z = symbols('x y z')
+        expr = parse_formula_safe(formula_latex)
+
+        return jsonify({
+            'funcion': safe_latex(expr),
+            'dx': safe_latex(diff(expr, x)),
+            'dy': safe_latex(diff(expr, y)),
+            'dz': safe_latex(diff(expr, z))
+        })
+    except Exception as e:
+        return jsonify({'error': f'Error en /solverTutorInit: {str(e)}', 'details': traceback.format_exc()}), 500
+
+
+@app.route("/solverTutorCheck", methods=["POST"])
+def solver_tutor_check():
+    try:
+        data = request.json
+        formula_latex = data.get('formula', '')
+        dy_usuario = data.get('dy', '')
+        dz_usuario = data.get('dz', '')
+
+        x, y, z = symbols('x y z')
+        expr = parse_formula_safe(formula_latex)
+
+        derivada_y = diff(expr, y)
+        derivada_z = diff(expr, z)
+
+        resultado = {
+            'dy_correcta': safe_latex(derivada_y),
+            'dz_correcta': safe_latex(derivada_z),
+            'verificacion': {
+                'dy': comparar_respuestas(dy_usuario, derivada_y),
+                'dz': comparar_respuestas(dz_usuario, derivada_z),
+            },
+            'retroalimentacion': {}
+        }
+
+        if not resultado['verificacion']['dy']:
+            resultado['retroalimentacion']['dy'] = get_ia_explicacion(expr, 'y')
+        if not resultado['verificacion']['dz']:
+            resultado['retroalimentacion']['dz'] = get_ia_explicacion(expr, 'z')
+
+        return jsonify(resultado)
+    except Exception as e:
+        return jsonify({'error': f'Error en /solverTutorCheck: {str(e)}', 'details': traceback.format_exc()}), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():
