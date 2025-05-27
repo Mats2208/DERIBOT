@@ -92,7 +92,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-6xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 via-purple-500 to-purple-400 mb-6 animate-pulse">
-              DERIVABOT
+              DERIBOT
             </h1>
             <p className="text-xl md:text-2xl text-gray-700 font-light mb-8 max-w-3xl mx-auto leading-relaxed">
               Domina las derivadas matemáticas con nuestro sistema interactivo de aprendizaje potenciado por IA
