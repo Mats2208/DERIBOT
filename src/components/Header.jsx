@@ -55,6 +55,12 @@ export default function Header() {
             >
               Solver
             </button>
+            <button 
+              onClick={() => navigate("/About")}
+              className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
+            >
+              Acerca de Nosotros
+            </button>
           </nav>          {/* CTA Button Desktop */}
           <div className="hidden md:flex">
             <button 
