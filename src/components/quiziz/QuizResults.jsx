@@ -12,8 +12,7 @@ export default function QuizResults({ quiz, score, onRestart, onBack }) {
   const [showRankingModal, setShowRankingModal] = useState(false)
   const [formData, setFormData] = useState({ estudiante: "", docente: "", materia: "" })
   const [rankings, setRankings] = useState([])
-  const PROXY = "https://cors-anywhere.herokuapp.com/";
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbwC08xe9FjuHrxQ8-AHOouT8Q5kLUM1f226unvLo9gkJNfywJg7Oy6fuzspGXB5cq9rVQ/exec";
+  const PROXY_URL = `${import.meta.env.VITE_API_URL}/proxy/gas`;
 
 
   const [isValidQuiz, setIsValidQuiz] = useState(true)
@@ -93,7 +92,7 @@ export default function QuizResults({ quiz, score, onRestart, onBack }) {
   }
     const fetchRankingFromGoogle = async () => {
       try {
-        const response = await fetch(PROXY + GAS_URL);
+        const response = await fetch(PROXY_URL);
         const data = await response.json();
         const cleaned = data.map((item, i) => ({
           id: i,
@@ -129,7 +128,7 @@ export default function QuizResults({ quiz, score, onRestart, onBack }) {
     };
 
     try {
-    const response = await fetch(PROXY + GAS_URL, {
+    const response = await fetch(PROXY_URL, {
       method: "POST",
       body: JSON.stringify(entry),
       headers: {

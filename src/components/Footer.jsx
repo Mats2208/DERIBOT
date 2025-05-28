@@ -15,7 +15,7 @@ export default function Footer() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-300">
-                  DERIBOT
+                  DerivaBot
                 </h3>
                 <p className="text-sm text-gray-400">Sistema de Aprendizaje</p>
               </div>

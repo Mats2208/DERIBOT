@@ -25,7 +25,7 @@ export default function Header() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-purple-500">
-                DERIBOT
+                DerivaBot
               </h1>
               <p className="text-xs text-gray-500 -mt-1">Tutor Virtual</p>
             </div>

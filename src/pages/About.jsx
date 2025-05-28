@@ -5,9 +5,9 @@ import { Link } from "react-router-dom"
 
 export default function AboutMe() {  const teamMembers = [
     {
-      name: "Flavia Lozada",
-      role: "Leader Creative Didaction",
-      description: "Mente creative respecto a features y metodos didacticos de ensenanza.",
+      name: "Flavia Lozada Rueda",
+      role: "Creative and Didactic Leader",
+      description: "Apasionada por crear herramientas tecnológicas accesibles.",
       skills: ["Python", "HTML"],
       color: "from-blue-500 to-indigo-600",
       bgColor: "bg-blue-50 border-blue-200",
@@ -24,7 +24,7 @@ export default function AboutMe() {  const teamMembers = [
     },
     {
       name: "Mateo Andrés Soto",
-      role: "Full Stack Developer & IA Integration  ",
+      role: "Full Stack Developer & AI Integration",
       description: "Conectando IA con las tareas basicas del aprendizaje.",
       skills: ["JavaScript","DevOps"],
       color: "from-gray-600 to-indigo-600",

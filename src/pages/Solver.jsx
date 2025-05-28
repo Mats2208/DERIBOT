@@ -8,13 +8,12 @@ const Solver = () => {
   const [resultado, setResultado] = useState(null)
   const [loading, setLoading] = useState(false)
   const [showResult, setShowResult] = useState(false)
-
   const handleResolver = async (formulaLatex, orden) => {
     try {
       setLoading(true)
       setShowResult(true)
 
-      const res = await fetch("https://deribot.onrender.com/resolver", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/resolver`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

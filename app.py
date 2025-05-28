@@ -299,7 +299,7 @@ Derivadas parciales de primer orden:
 Eres DeriBot, un asistente educativo especializado en cálculo diferencial. 
 
 {resultado_texto}
-Eres DeriBot y estas aquí para explicar el ejercicio paso a paso, se educado y presentate en cada promt de respuesta que te haga el usuario.
+Eres DerivaBot y estas aquí para explicar el ejercicio paso a paso, se educado y presentate en cada promt de respuesta que te haga el usuario.
 La respuesta debe estar detallada de inicio a fin, no tomes el camino corto, explica todo, piensa que son alumnos que recien empiezan, pero obvio no se lo digas a ellos, vos solo explica todo bien.
 Por favor, si vas a poner una formula, pona en texto plano, el interpreter de latex no funciona asi que NO USES LATEX, DONT USE LATEX. Tampco uses Markdown, texto plano.Ejemplo: "La derivada $\\frac{{\\partial f}}{{\\partial x}}$ representa la tasa de cambio..."
 """
@@ -428,6 +428,36 @@ def serve_frontend(path):
             return send_from_directory(app.static_folder, 'index.html')
     except Exception as e:
         return jsonify({'error': f'Error serving file: {str(e)}'}), 404
+
+# 🔗 Proxy para Google Apps Script (eliminando dependencia de CORS Anywhere)
+@app.route("/proxy/gas", methods=["GET", "POST"])
+def proxy_gas():
+    """Proxy para Google Apps Script para evitar problemas de CORS"""
+    gas_url = "https://script.google.com/macros/s/AKfycbwC08xe9FjuHrxQ8-AHOouT8Q5kLUM1f226unvLo9gkJNfywJg7Oy6fuzspGXB5cq9rVQ/exec"
+    
+    try:
+        if request.method == "GET":
+            # Para obtener datos (ranking)
+            response = requests.get(gas_url, timeout=10)
+        elif request.method == "POST":
+            # Para enviar datos (guardar en ranking)
+            data = request.get_json()
+            response = requests.post(
+                gas_url,
+                json=data,
+                headers={"Content-Type": "application/json"},
+                timeout=10
+            )
+        
+        # Retornar la respuesta del Google Apps Script
+        return jsonify(response.json()), response.status_code
+        
+    except requests.exceptions.Timeout:
+        return jsonify({"error": "Timeout al conectar con Google Sheets"}), 504
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": f"Error de conexión: {str(e)}"}), 502
+    except Exception as e:
+        return jsonify({"error": f"Error del servidor: {str(e)}"}), 500
 
 # ▶️ Ejecutar
 if __name__ == "__main__":

@@ -12,14 +12,13 @@ export default function Tutor() {
   const [resultado, setResultado] = useState(null)
   const [loading, setLoading] = useState(false)
   const [progreso, setProgreso] = useState(0)
-
   // Paso 1: Enviar fórmula al backend
   const manejarFormula = async (formula) => {
     try {
       setLoading(true)
       setProgreso(33)
 
-      const res = await fetch("https://deribot.onrender.com/solverTutorInit", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/solverTutorInit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formula }),
@@ -50,13 +49,12 @@ export default function Tutor() {
       setLoading(false)
     }
   }
-
   // Paso 2: Enviar respuestas del usuario
   const manejarVerificacion = async (dy, dz) => {
     try {
       setLoading(true)
 
-      const res = await fetch("https://deribot.onrender.com/solverTutorCheck", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/solverTutorCheck`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
